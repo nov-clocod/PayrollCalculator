@@ -14,7 +14,16 @@ public class PayrollCalculator {
         System.out.println("What is your pay rate?");
         float payRate = myScanner.nextFloat();
 
-        float employeePay = hoursWorked * payRate;
+        float employeePay;
+
+        if (hoursWorked > 40) {
+            float regularHours = 40;
+            float overtimeHours = hoursWorked - 40;
+            float overtimePay = overtimeHours * payRate * 1.5f;
+            employeePay = regularHours * payRate + overtimePay;
+        } else {
+            employeePay = hoursWorked * payRate;
+        }
 
         System.out.printf(inputName + " your pay is: $%.2f", employeePay);
     }
