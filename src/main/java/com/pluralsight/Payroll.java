@@ -18,6 +18,12 @@ public class Payroll {
 
             String line;
             String text;
+            boolean firstRecord = true;
+
+            if (payrollFile.endsWith(".json")) {
+                myWriter.write("[\n");
+            }
+
             while ((line = myReader.readLine()) != null) {
                 String[] tokens = line.split("\\|");
                 int id = Integer.parseInt(tokens[0]);
@@ -30,10 +36,27 @@ public class Payroll {
                 System.out.printf("Employee ID: %d, Name: %s, Gross Pay: $%.2f%n",
                         employee.getEmployeeId(), employee.getName(), employee.getGrossPay());
 
-                text = String.format("%d | %s | %.2f\n",
-                        employee.getEmployeeId(), employee.getName(), employee.getGrossPay());
-                myWriter.write(text);
+                if (payrollFile.endsWith(".json")) {
+                    if (!firstRecord) {
+                        myWriter.write(",\n");
+                    }
+                    firstRecord = false;
+
+                    myWriter.write("  { \"employeeID\": " + employee.getEmployeeId() + ",");
+                    myWriter.write(" \"name\": \"" + employee.getName() + "\",");
+                    myWriter.write(" \"grossPay\": " + String.format("%.2f", employee.getGrossPay()));
+                    myWriter.write(" }");
+                } else {
+                    text = String.format("%d | %s | %.2f\n",
+                            employee.getEmployeeId(), employee.getName(), employee.getGrossPay());
+                    myWriter.write(text);
+                }
             }
+
+            if (payrollFile.endsWith(".json")) {
+                myWriter.write("\n]\n");
+            }
+
             myScanner.close();
             myWriter.close();
             myReader.close();
